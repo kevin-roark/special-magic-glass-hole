@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>special magic glass room</title>
+    <!--link rel="stylesheet" href="/fonts.css" type="text/css" media="screen" charset="utf-8" / -->
+    <link rel="stylesheet" href="/app.css" type="text/css" media="screen" charset="utf-8" />
+    <!-- link rel="shortcut icon" href="/favicon.png" type="image/x-icon" -->
+  </head>
+  <body>
+    <div class="header">
+      Special (Magic) Glass Hole
+    </div>
+    <div class="glass-pane">
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="window-controls">
+      <video id="video"></video>
+      <div class="snap-button"></div>
+    </div>
+
+    <div class="bystanders">
+      BYSTANDERS: <span class="bystander-count">{{ connections }}</span>
+    </div>
+
+    <div class="footer">
+      enjoy the special pics -
+      made by <a target="_blank" href="http://porkf.at/">kev</a> -
+      check out <a target="_blank" href="http://www.millersfantasy.com/">Miller's Fantasy</a> -
+      :)))
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script>
+      config = {};
+      config.io = "{{{io}}}";
+    </script>
+    <script src="/main.js"></script>
+  </body>
+</html>
