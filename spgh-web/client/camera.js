@@ -5,7 +5,7 @@
 var filer = require('./lib/filer');
 
 /* constants */
-var MAX_PIC_WIDTH = 320;
+var PIC_WIDTH = 60;
 var VIDEO_WIDTH = 160;
 var VIDEO_HEIGHT = 120;
 
@@ -52,7 +52,7 @@ video.addEventListener('canplay', function(ev){
 }, false);
 
 exports.takePicture = function() {
-  var w = Math.floor(Math.random() * MAX_PIC_WIDTH) + 20;
+  var w = PIC_WIDTH;
   var h = w * 0.75;
 
   canvas.width = w;

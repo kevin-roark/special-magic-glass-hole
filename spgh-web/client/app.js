@@ -8,7 +8,8 @@ var io = require('socket.io-client');
 var MAX_PIC_WIDTH = 320;
 var MAX_PIC_HEIGHT = MAX_PIC_WIDTH * 0.75;
 var GLASS_HEIGHT = 420;
-var THROTTLE_TIME = 500;
+var THROTTLE_TIME = 1000;
+var MAX_GLASS_TIME = 30;
 
 /* good stuff */
 var vendorURL = window.URL || window.webkitURL;
@@ -75,7 +76,7 @@ function flashScreen() {
 }
 
 function removeLater(el) {
-  var s = Math.floor(Math.random() * 22) + 3;
+  var s = Math.floor(Math.random() * (MAX_GLASS_TIME - 5)) + 5;
   setTimeout(function() {
     el.remove();
   }, s * 1000);
@@ -85,12 +86,16 @@ function showPic(blob) {
   var url = vendorURL.createObjectURL(blob);
   var top = Math.floor(Math.random() * (GLASS_HEIGHT - 40));
   var left = Math.floor(Math.random() * ($(window).width() - 40));
+  var w = Math.floor(Math.random() * MAX_PIC_WIDTH) + 20;
+  var h = w * 0.75;
   var o = 0.7 + (Math.random() * 0.3);
 
   var pic = $('<img class="glass-image">');
   pic.attr('src', url);
   pic.css('top', top + 'px');
   pic.css('left', left + 'px');
+  pic.css('width', w + 'px');
+  pic.css('height', h + 'px');
   pic.css('opacity', o);
   $glass.append(pic);
 
