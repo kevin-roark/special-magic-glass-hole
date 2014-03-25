@@ -8,6 +8,8 @@ git clone https://github.com/LearnBoost/socket.io-client.git ~/socket.io-client
 
 git clone https://github.com/Automattic/socket.io-emitter.git ~/socket.io-emitter
 
+git clone https://github.com/LearnBoost/socket.io-adapter.git ~/socket.io-adapter
+
 echo "doing presence"
 cd spgh-presence; mkdir node_modules;
 ln -s ~/socket.io-emitter node_modules/socket.io-emitter
