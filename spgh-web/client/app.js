@@ -23,7 +23,7 @@ $(window).resize(resize);
 resize();
 
 /* get that socket chillin */
-/*var socket = io(config.io);
+var socket = io(config.io);
 socket.on('connect', function() {
   $('.snap-button').fadeIn();
 });
@@ -32,13 +32,15 @@ socket.on('disconnect', function() {
   $('.snap-button').fadeOut();
 });
 
-socket.on('takepic', function(pic) {
-  showPic(pic);
+socket.on('takepic', function(picBuf) {
+  var blob = new Blob([picBuf], {type: 'image/png'});
+  flashScreen();
+  showPic(blob);
 });
 
 socket.on('connections', function(total) {
   $('.bystander-count').html(total);
-});*/
+});
 
 /* UI events, etc */
 
@@ -53,7 +55,7 @@ $('.snap-button').click(function() {
     enableSnapping();
   }, THROTTLE_TIME);
 
-  showPic(imageBlob);
+  socket.emit('madepic', imageBlob);
 });
 
 function disableSnapping() {
@@ -64,6 +66,12 @@ function disableSnapping() {
 function enableSnapping() {
   snappable = true;
   $('.snap-button').removeClass('just-snapped');
+}
+
+function flashScreen() {
+  var c = kutility.randColor();
+  $('body').css('background-color', c);
+  $('.header').css('color', c);
 }
 
 function showPic(blob) {

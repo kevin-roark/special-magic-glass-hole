@@ -1,9 +1,9 @@
 {
-  "name": "spgh-io",
+  "name": "spgh-picspitter",
   "version": "0.1.0",
-  "description": "A room where everyone can see one another from across the world",
+  "description": "Handles the pictures for SPGH",
   "main": "index.js",
-  "private": "true",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,10 +15,9 @@
   "author": "Kevin Roark",
   "license": "MIT",
   "dependencies": {
-    "socket.io": "1.0.0",
     "debug": "0.7.4",
-    "socket.io-redis": "~0.1.0",
-    "redis": "~0.10.1",
+    "redis": "0.10.1",
+    "socket.io-emitter": "0.1.0",
     "msgpack-js": "~0.3.0"
   }
 }

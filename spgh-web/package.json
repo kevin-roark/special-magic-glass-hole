@@ -1,8 +1,8 @@
 {
-  "name": "spyr-web",
+  "name": "spgh-web",
   "private": true,
   "version": "0.1.0",
-  "description": "hear everyone's special sounds",
+  "description": "see everyone at once",
   "private": true,
   "dependencies": {
     "express": "3.4.8",
