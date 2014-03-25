@@ -20,6 +20,17 @@ if (!navigator.getUserMedia) {
                            || navigator.msGetUserMedia;
 }
 
+if (!navigator.getUserMedia) {
+  exports.takePicture = null;
+  video.setAttribute('width', 0);
+  video.setAttribute('height', 0);
+  videoMirror.setAttribute('width', 0);
+  videoMirror.setAttribute('height', 0);
+  canvas.setAttribute('width', 0);
+  canvas.setAttribute('height', 0);
+  return;
+}
+
 navigator.getUserMedia({video: true, audio: false}, mediaHandler, function(e) {
   console.log('Error getting video');
   console.log(e);

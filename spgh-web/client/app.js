@@ -26,7 +26,8 @@ resize();
 /* get that socket chillin */
 var socket = io(config.io);
 socket.on('connect', function() {
-  $('.snap-button').fadeIn();
+  if (camera.takePicture)
+    $('.snap-button').fadeIn();
 });
 
 socket.on('disconnect', function() {

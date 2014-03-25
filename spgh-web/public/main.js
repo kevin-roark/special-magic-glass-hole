@@ -27,7 +27,8 @@ resize();
 /* get that socket chillin */
 var socket = io(config.io);
 socket.on('connect', function() {
-  $('.snap-button').fadeIn();
+  if (camera.takePicture)
+    $('.snap-button').fadeIn();
 });
 
 socket.on('disconnect', function() {
@@ -124,6 +125,17 @@ if (!navigator.getUserMedia) {
   navigator.getUserMedia = navigator.webkitGetUserMedia
                            || navigator.mozGetUserMedia
                            || navigator.msGetUserMedia;
+}
+
+if (!navigator.getUserMedia) {
+  exports.takePicture = null;
+  video.setAttribute('width', 0);
+  video.setAttribute('height', 0);
+  videoMirror.setAttribute('width', 0);
+  videoMirror.setAttribute('height', 0);
+  canvas.setAttribute('width', 0);
+  canvas.setAttribute('height', 0);
+  return;
 }
 
 navigator.getUserMedia({video: true, audio: false}, mediaHandler, function(e) {
