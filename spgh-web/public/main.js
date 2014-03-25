@@ -29,6 +29,10 @@ if (!camera.takePicture) {
   $('.window-controls').css('height', '30px');
   $('.window-controls').css('padding', '5px');
   $('.header').css('font-size', '1.5em');
+  $('.glass-pane').css('height', '330px');
+  
+  MAX_PIC_WIDTH = 100;
+  MAX_PIC_HEIGHT = MAX_PIC_WIDTH * 0.75;
 
   document.getElementById('pic-input').addEventListener("change", handlePicFile, false);
 }
@@ -36,11 +40,12 @@ if (!camera.takePicture) {
 /* get that socket chillin */
 var socket = io(config.io);
 socket.on('connect', function() {
-  if (camera.takePicture)
+  if (camera.takePicture) {
     $('.snap-button').fadeIn();
+    $('.snap-button').html('snap snap');
+  }
   else {
     $('.mobile-input-wrapper').fadeIn();
-    console.log('faded in mobile wrapper');
   }
 });
 
@@ -48,8 +53,8 @@ socket.on('disconnect', function() {
   $('.snap-button').fadeOut();
 });
 
-socket.on('takepic', function(picBuf) {
-  var blob = new Blob([picBuf], {type: 'image/png'});
+socket.on('takepic', function(obj) {
+  var blob = new Blob([obj.pic], {type: obj.t});
   flashScreen();
   showPic(blob);
 });
@@ -71,12 +76,17 @@ $('.snap-button').click(function() {
     enableSnapping();
   }, THROTTLE_TIME);
 
-  socket.emit('madepic', imageBlob);
+  socket.emit('madepic', {pic: imageBlob, t: imageBlob.type});
 });
 
 function handlePicFile() {
+  if (!this.files || this.files.length <= 0)
+    return;
+
   var picFile = this.files[0];
-  console.log(picFile);
+  camera.resizeFileImage(picFile, function(resizedBlob) {
+    socket.emit('madepic', {pic: resizedBlob, t: resizedBlob.type});
+  });
 }
 
 function disableSnapping() {
@@ -106,7 +116,7 @@ function showPic(blob) {
   var url = vendorURL.createObjectURL(blob);
   var top = Math.floor(Math.random() * (GLASS_HEIGHT - 40));
   var left = Math.floor(Math.random() * ($(window).width() - 100));
-  var w = Math.floor(Math.random() * MAX_PIC_WIDTH) + 20;
+  var w = Math.floor(Math.random() * MAX_PIC_WIDTH) + 60;
   var h = w * 0.75;
   var o = 0.7 + (Math.random() * 0.3);
 
@@ -131,10 +141,10 @@ var filer = require('./lib/filer');
 
 /* constants */
 var PIC_WIDTH = 60;
+var PIC_HEIGHT = PIC_WIDTH * 0.75;
 var VIDEO_WIDTH = 160;
 var VIDEO_HEIGHT = 120;
 
-var streaming = false;
 var video = document.querySelector('#video');
 var videoMirror = document.querySelector('#video-mirror');
 var canvas = document.querySelector('#canvas');
@@ -145,62 +155,107 @@ if (!navigator.getUserMedia) {
                            || navigator.msGetUserMedia;
 }
 
-if (!navigator.getUserMedia) {
-  exports.takePicture = null;
-  video.setAttribute('width', 0);
-  video.setAttribute('height', 0);
-  videoMirror.setAttribute('width', 0);
-  videoMirror.setAttribute('height', 0);
-  canvas.setAttribute('width', 0);
-  canvas.setAttribute('height', 0);
-} else {
+if (navigator.getUserMedia) {
+  navigator.getUserMedia({video: true, audio: false}, mediaHandler, function(e) {
+    console.log('Error getting video');
+    console.log(e);
+  });
 
-navigator.getUserMedia({video: true, audio: false}, mediaHandler, function(e) {
-  console.log('Error getting video');
-  console.log(e);
-});
+  function mediaHandler(stream) {
+    if (navigator.mozGetUserMedia) {
+      video.mozSrcObject = stream;
+      videoMirror.mozSrcObject = stream;
+    } else {
+      var vendorURL = window.URL || window.webkitURL;
+      var vidUrl = vendorURL.createObjectURL(stream);
+      videoMirror.src = vidUrl;
+      video.src = vidUrl;
+    }
+    video.play();
+    videoMirror.play();
+  }
+}
 
-function mediaHandler(stream) {
-  if (navigator.mozGetUserMedia) {
-    video.mozSrcObject = stream;
-    videoMirror.mozSrcObject = stream;
+function setDimensions() {
+  var w, h;
+  if (navigator.getUserMedia) {
+    w = VIDEO_WIDTH;
+    h = VIDEO_HEIGHT;
   } else {
-    var vendorURL = window.URL || window.webkitURL;
-    var vidUrl = vendorURL.createObjectURL(stream);
-    videoMirror.src = vidUrl;
-    video.src = vidUrl;
+    w = 0;
+    h = 0;
   }
-  video.play();
-  videoMirror.play();
+
+  video.setAttribute('width', w);
+  video.setAttribute('height', h);
+  videoMirror.setAttribute('width', w);
+  videoMirror.setAttribute('height', h);
+  canvas.setAttribute('width', w);
+  canvas.setAttribute('height', h);
+}
+setDimensions();
+
+if (navigator.getUserMedia) {
+  exports.takePicture = function() {
+    var w = PIC_WIDTH;
+    var h = PIC_HEIGHT;
+    canvas.width = w;
+    canvas.height = h;
+    canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+
+    var data = canvas.toDataURL('image/png');
+    canvas.getContext('2d').clearRect(0, 0, w, h);
+
+    return filer.Util.dataURLToBlob(data);
+  }
+} else {
+  exports.takePicture = null;
 }
 
-video.addEventListener('canplay', function(ev){
-  if (!streaming) {
-    video.setAttribute('width', VIDEO_WIDTH);
-    video.setAttribute('height', VIDEO_HEIGHT);
-    videoMirror.setAttribute('width', VIDEO_WIDTH);
-    videoMirror.setAttribute('height', VIDEO_HEIGHT);
-    canvas.setAttribute('width', VIDEO_WIDTH);
-    canvas.setAttribute('height', VIDEO_HEIGHT);
-    streaming = true;
+exports.resizeFileImage = function(f, callback) {
+  var img = document.createElement('img');
+  var reader = new FileReader();  
+  reader.onload = function(e) {
+    img.src = e.target.result;
+
+    canvas.getContext('2d').drawImage(img, 0, 0);
+
+    var w = img.width;
+    var h = img.height;
+
+    if (w == 0 && h == 0) {
+      reader.readAsDataURL(f);
+      return;
+    }
+
+    if (w > h) {
+      if (w > PIC_WIDTH) {
+        h *= PIC_WIDTH / w;
+        w = PIC_WIDTH;
+      }
+    } else if (h >= w && h != 0) {
+      if (h > PIC_HEIGHT) {
+        w *= PIC_HEIGHT / h;
+        h = PIC_HEIGHT;
+      }
+    } else if (h == 0) {
+      w = PIC_WIDTH;
+      h = PIC_HEIGHT;
+    }
+
+    canvas.width = w;
+    canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+ 
+    var dataurl = canvas.toDataURL('image/png');
+    canvas.getContext('2d').clearRect(0, 0, w, h);
+    
+    var blob = filer.Util.dataURLToBlob(dataurl);
+    callback(blob);
   }
-}, false);
-
-exports.takePicture = function() {
-  var w = PIC_WIDTH;
-  var h = w * 0.75;
-
-  canvas.width = w;
-  canvas.height = h;
-  canvas.getContext('2d').drawImage(video, 0, 0, w, h);
-  var data = canvas.toDataURL('image/png');
-  //photo.setAttribute('src', data);
-  canvas.getContext('2d').clearRect(0, 0, w, h);
-
-  return filer.Util.dataURLToBlob(data);
+  reader.readAsDataURL(f);
 }
 
-} /* the else for if have getUserMedia */
 
 },{"./lib/filer":3}],3:[function(require,module,exports){
 /**

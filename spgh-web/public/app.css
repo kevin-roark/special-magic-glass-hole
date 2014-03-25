@@ -60,13 +60,16 @@ body {
   }
 
   .snap-button {
-    height: 80px;
+    height: 50px;
     width: 40%;
     border-radius: 5px;
     background-color: rgb(230, 230, 80);
+    color: rgb(40, 40, 40);
+    font-size: 1.2em;
     cursor: pointer;
 
     margin: 0 auto;
+    padding-top: 30px;
     display: none;
   }
     .snap-button:hover, .snap-button:focus {
@@ -91,7 +94,22 @@ body {
 
 .mobile-input-wrapper {
   display: none;
+  position: relative;
 }
+  #pic-input-div {
+    position: absolute;
+    width: 40%;
+    background-color: rgb(230, 230, 80);
+    color: rgb(40, 40, 40);
+    font-size: 0.95em;
+    margin-left: 28%;
+    margin-top: 5px;
+    padding-bottom: 2px;
+  }
+  #pic-input {
+    opacity: 0;
+    z-index: 1;
+  }
 
 .footer {
   width: 100%;

@@ -28,6 +28,10 @@ if (!camera.takePicture) {
   $('.window-controls').css('height', '30px');
   $('.window-controls').css('padding', '5px');
   $('.header').css('font-size', '1.5em');
+  $('.glass-pane').css('height', '330px');
+  
+  MAX_PIC_WIDTH = 100;
+  MAX_PIC_HEIGHT = MAX_PIC_WIDTH * 0.75;
 
   document.getElementById('pic-input').addEventListener("change", handlePicFile, false);
 }
@@ -35,11 +39,12 @@ if (!camera.takePicture) {
 /* get that socket chillin */
 var socket = io(config.io);
 socket.on('connect', function() {
-  if (camera.takePicture)
+  if (camera.takePicture) {
     $('.snap-button').fadeIn();
+    $('.snap-button').html('snap snap');
+  }
   else {
     $('.mobile-input-wrapper').fadeIn();
-    console.log('faded in mobile wrapper');
   }
 });
 
@@ -78,8 +83,9 @@ function handlePicFile() {
     return;
 
   var picFile = this.files[0];
-  var resizedBlob = camera.resizeFileImage(picFile);
-  console.log(resizedBlob);
+  camera.resizeFileImage(picFile, function(resizedBlob) {
+    socket.emit('madepic', {pic: resizedBlob, t: resizedBlob.type});
+  });
 }
 
 function disableSnapping() {
@@ -109,7 +115,7 @@ function showPic(blob) {
   var url = vendorURL.createObjectURL(blob);
   var top = Math.floor(Math.random() * (GLASS_HEIGHT - 40));
   var left = Math.floor(Math.random() * ($(window).width() - 100));
-  var w = Math.floor(Math.random() * MAX_PIC_WIDTH) + 20;
+  var w = Math.floor(Math.random() * MAX_PIC_WIDTH) + 60;
   var h = w * 0.75;
   var o = 0.7 + (Math.random() * 0.3);
 
