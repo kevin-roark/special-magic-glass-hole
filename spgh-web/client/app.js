@@ -29,7 +29,7 @@ if (!camera.takePicture) {
   $('.window-controls').css('padding', '5px');
   $('.header').css('font-size', '1.5em');
 
-  $('.pic-input').addEventListener("change", handlePicFile, false);
+  document.getElementById('pic-input').addEventListener("change", handlePicFile, false);
 }
 
 /* get that socket chillin */
@@ -37,8 +37,10 @@ var socket = io(config.io);
 socket.on('connect', function() {
   if (camera.takePicture)
     $('.snap-button').fadeIn();
-  else
+  else {
     $('.mobile-input-wrapper').fadeIn();
+    console.log('faded in mobile wrapper');
+  }
 });
 
 socket.on('disconnect', function() {
