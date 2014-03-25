@@ -12,9 +12,9 @@ var io = require('socket.io-emitter')(redis);
 console.log('starting pic-spitter.');
 
 sub.subscribe('spgh:madepic');
-sub.on('message', function(channel, picBuf){
+sub.on('message', function(channel, obj){
   if ('spgh:madepic' != channel) return;
 
-  io.emit('takepic', msgpack.decode(picBuf));
+  io.emit('takepic', msgpack.decode(obj));
   //redis.set('spgh-takepic', msgpack.encode(picBuf))
 });

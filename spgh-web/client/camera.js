@@ -64,13 +64,31 @@ video.addEventListener('canplay', function(ev){
 exports.takePicture = function() {
   var w = PIC_WIDTH;
   var h = w * 0.75;
-
   canvas.width = w;
   canvas.height = h;
   canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+
   var data = canvas.toDataURL('image/png');
-  //photo.setAttribute('src', data);
   canvas.getContext('2d').clearRect(0, 0, w, h);
+
+  return filer.Util.dataURLToBlob(data);
+}
+
+exports.resizeFileImage = function(f) {
+  var vendorURL = window.URL || window.webkitURL;
+  var picURL = vendorURL.createObjectURL(f);
+  var img = $('<img>');
+  img.attr('src', picURL);
+
+  var w = PIC_WIDTH;
+  var h = w * 0.75;
+  canvas.width = w;
+  canvas.height = h;
+  canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+  var data = canvas.toDataURL('image/png');
+  canvas.getContext('2d').clearRect(0, 0, w, h);
+  img.remove();
 
   return filer.Util.dataURLToBlob(data);
 }

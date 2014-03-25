@@ -30,8 +30,8 @@ io.on('connection', function(socket){
   });
 
   // publish yells to redis
-  socket.on('madepic', function(picBuf){
-    redis.publish('spgh:madepic', msgpack.encode(picBuf));
+  socket.on('madepic', function(obj){
+    redis.publish('spgh:madepic', msgpack.encode(obj));
   });
 
 });

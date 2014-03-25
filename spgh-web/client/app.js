@@ -47,8 +47,8 @@ socket.on('disconnect', function() {
   $('.snap-button').fadeOut();
 });
 
-socket.on('takepic', function(picBuf) {
-  var blob = new Blob([picBuf], {type: 'image/png'});
+socket.on('takepic', function(obj) {
+  var blob = new Blob([obj.pic], {type: obj.t});
   flashScreen();
   showPic(blob);
 });
@@ -70,12 +70,16 @@ $('.snap-button').click(function() {
     enableSnapping();
   }, THROTTLE_TIME);
 
-  socket.emit('madepic', imageBlob);
+  socket.emit('madepic', {pic: imageBlob, t: imageBlob.type});
 });
 
 function handlePicFile() {
+  if (!this.files || this.files.length <= 0)
+    return;
+
   var picFile = this.files[0];
-  console.log(picFile);
+  var resizedBlob = camera.resizeFileImage(picFile);
+  console.log(resizedBlob);
 }
 
 function disableSnapping() {
