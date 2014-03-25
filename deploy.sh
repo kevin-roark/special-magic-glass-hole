@@ -13,3 +13,6 @@ forever spgh-picspitter/index.js &
 forever spgh-io/index.js &
 
 forever spgh-web/index.js &
+
+sudo iptables -t nat -I PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 3000
+
