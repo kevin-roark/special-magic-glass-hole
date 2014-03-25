@@ -29,7 +29,9 @@ app.use(function(req, res, next){
 
 var url = process.env.SPGH_IO_URL || 'http://localhost:3001';
 app.get('/', function(req, res, next){
-  redis.get('spgh:connections-total', function(err, count){
+  redis.get('spgh:connections-total', function(err, count) {
+    if (!count)
+      count = 0;
     if (err) return next(err);
     res.render('index.mustache', {
       io: url,
