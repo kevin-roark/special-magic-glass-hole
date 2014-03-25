@@ -89,6 +89,10 @@ body {
   color: rgb(40, 40, 40);
 }
 
+.mobile-input-wrapper {
+  display: none;
+}
+
 .footer {
   width: 100%;
   padding: 1em 0em;

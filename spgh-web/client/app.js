@@ -23,11 +23,13 @@ function resize() {
 $(window).resize(resize);
 resize();
 
-// on a read-only device, likely mobile
+// no getusermedia device, likely mobile
 if (!camera.takePicture) {
-  $('.window-controls').css('height', '0px');
-  $('.window-controls').css('padding', '0px');
+  $('.window-controls').css('height', '30px');
+  $('.window-controls').css('padding', '5px');
   $('.header').css('font-size', '1.5em');
+
+  $('.pic-input').addEventListener("change", handlePicFile, false);
 }
 
 /* get that socket chillin */
@@ -35,6 +37,8 @@ var socket = io(config.io);
 socket.on('connect', function() {
   if (camera.takePicture)
     $('.snap-button').fadeIn();
+  else
+    $('.mobile-input-wrapper').fadeIn();
 });
 
 socket.on('disconnect', function() {
@@ -66,6 +70,11 @@ $('.snap-button').click(function() {
 
   socket.emit('madepic', imageBlob);
 });
+
+function handlePicFile() {
+  var picFile = this.files[0];
+  console.log(picFile);
+}
 
 function disableSnapping() {
   snappable = false;
