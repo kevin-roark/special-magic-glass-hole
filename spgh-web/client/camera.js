@@ -28,8 +28,7 @@ if (!navigator.getUserMedia) {
   videoMirror.setAttribute('height', 0);
   canvas.setAttribute('width', 0);
   canvas.setAttribute('height', 0);
-  return;
-}
+} else {
 
 navigator.getUserMedia({video: true, audio: false}, mediaHandler, function(e) {
   console.log('Error getting video');
@@ -75,3 +74,5 @@ exports.takePicture = function() {
 
   return filer.Util.dataURLToBlob(data);
 }
+
+} /* the else for if have getUserMedia */

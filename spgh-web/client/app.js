@@ -23,6 +23,13 @@ function resize() {
 $(window).resize(resize);
 resize();
 
+// on a read-only device, likely mobile
+if (!camera.takePicture) {
+  $('.window-controls').css('height', '0px');
+  $('.window-controls').css('padding', '0px');
+  $('.header').css('font-size', '1.5em');
+}
+
 /* get that socket chillin */
 var socket = io(config.io);
 socket.on('connect', function() {
@@ -86,7 +93,7 @@ function removeLater(el) {
 function showPic(blob) {
   var url = vendorURL.createObjectURL(blob);
   var top = Math.floor(Math.random() * (GLASS_HEIGHT - 40));
-  var left = Math.floor(Math.random() * ($(window).width() - 40));
+  var left = Math.floor(Math.random() * ($(window).width() - 100));
   var w = Math.floor(Math.random() * MAX_PIC_WIDTH) + 20;
   var h = w * 0.75;
   var o = 0.7 + (Math.random() * 0.3);
