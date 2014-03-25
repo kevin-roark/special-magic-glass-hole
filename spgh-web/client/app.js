@@ -74,14 +74,25 @@ function flashScreen() {
   $('.header').css('color', c);
 }
 
+function removeLater(el) {
+  var s = Math.floor(Math.random() * 22) + 3;
+  setTimeout(function() {
+    el.remove();
+  }, s * 1000);
+}
+
 function showPic(blob) {
   var url = vendorURL.createObjectURL(blob);
   var top = Math.floor(Math.random() * (GLASS_HEIGHT - 40));
   var left = Math.floor(Math.random() * ($(window).width() - 40));
+  var o = 0.7 + (Math.random() * 0.3);
 
   var pic = $('<img class="glass-image">');
   pic.attr('src', url);
   pic.css('top', top + 'px');
   pic.css('left', left + 'px');
+  pic.css('opacity', o);
   $glass.append(pic);
+
+  removeLater(pic);
 }
