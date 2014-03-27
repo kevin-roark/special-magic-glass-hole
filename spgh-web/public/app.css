@@ -9,6 +9,11 @@ html, body {
 body {
     font-family: Helvetica, sans-serif;
     overflow-x: hidden;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    -o-user-select: none;
+    user-select: none;
 }
 
 .header {
@@ -30,6 +35,11 @@ body {
   background-color: rgba(210, 200, 255, 0.95);
   position: relative;
   z-index: -1;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  -o-user-select: none;
+  user-select: none;
 }
 
   .glass-image {
@@ -44,6 +54,11 @@ body {
   height: 105px;
   text-align: center;
   padding: 25px 0px 0px 0px;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  -o-user-select: none;
+  user-select: none;
 }
 
   #video, #video-mirror {
