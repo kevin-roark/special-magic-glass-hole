@@ -6,13 +6,13 @@ git pull
 
 cd spgh-web; make; cd ..;
 
-forever spgh-presence/index.js &
+forever start spgh-presence/index.js
 
-forever spgh-picspitter/index.js &
+forever start spgh-picspitter/index.js
 
-forever spgh-io/index.js &
+forever start spgh-io/index.js
 
-forever spgh-web/index.js &
+forever start spgh-web/index.js
 
 sudo iptables -t nat -I PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 3000
 
